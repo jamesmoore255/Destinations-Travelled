@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" data-framework="knockoutjs">
+<head>
+	<title>Neighborhood Map</title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+	<div class="wrapper">
+
+		<div id="side-panel">
+			<input id="filter" type="search" placeholder="Destination..." data-bind="textInput: query" autocomplete="off">
+			<input id="filter" type="button" value="filter">
+			<ul id="list" data-bind="foreach: filter">
+				<li data-bind="text: title"></li>
+			</ul>
+		</div>
+
+		<div id="map"></div>
+	</div>
+
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/knockout/dist/knockout.js"></script>
+	<script src="js/app.js"></script>
+	<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNy8RnvX7kFOIURwJmmdH453U4qJEmfSk&libraries=geometry,drawing&v=3&callback=initMap">
+    </script>
+</body>
+</html>
