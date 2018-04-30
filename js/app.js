@@ -85,3 +85,5 @@ var ViewModel = function() {
 }
 
 ko.applyBindings(new ViewModel());
+
+// This is the branch with the future changes
