@@ -33,57 +33,96 @@ function initMap() {
 		center: {lat: 10.3725951, lng: -75.6281321},
 		zoom: 11
 	});
-	// 'For loop' for the locations
-	for (var i = 0; i < locations.length; i++) {
-		// Get the position from the location array.
-		var position = locations[i].location;
-		var title = locations[i].title;
-        // Create a marker per location, and put into markers array.
-        var marker = new google.maps.Marker({
-            map: map,
-            position: position,
-            title: title,
-            animation: google.maps.Animation.DROP,
-            id: i
-        });
-		// Push the marker to our array of markers.
-		markers.push(marker);
-	}
 }
 
 var LocModel = function(data) {
 	// creating observable arrays for implementation into the DOM
-	this.title = ko.observable(data.title);
-	this.location = ko.observable(data.location);
-	this.query = ko.observable("")
+	this.title = data.title;
+	this.location = data.location;
+	this.marker = null;
+	this.favorite = false;
+};
 
-}
+
 
 var ViewModel = function() {
 	var self = this;
 
-	this.query = ko.observable('');
-
-	this.filter = ko.computed(function () {
-	    if (this.query()) {
-	        var search = this.query().toLowerCase();
-	        return ko.utils.arrayFilter(this.locationsList(), function (loc) {
-	            return loc.title().toLowerCase().indexOf(search) >= 0;
-	        });
-	    } else {
-	        return this.locationsList
-	    }}, this);  
+	// this.filter = ko.computed(function () {
+	//     if (this.query()) {
+	//         var search = this.query().toLowerCase();
+	//         return ko.utils.arrayFilter(this.locationsList(), function (loc) {
+	//             return loc.title().toLowerCase().indexOf(search) >= 0;
+	//         });
+	//     } else {
+	//         return this.locationsList
+	//     }}, this);  
 
 	// This is the locations array
-	this.locationsList = ko.observableArray([]);
+	this.locationsList = [];
 
 	// This function gets the locations from the 'locations' array
 	// Then pushes it to the observableArray
 	locations.forEach(function(locItem){
 		self.locationsList.push( new LocModel(locItem));
 	});
+
+	// creating the markers for each object in the locationsList array
+	self.locationsList.forEach(function(locItem) {
+		locItem.marker = new google.maps.Marker({
+			map: map,
+			animation: google.maps.Animation.DROP,
+			position: locItem.location,
+		});
+
+		// Add 3rd party API's
+
+		// Add event listeners
+
+		// FAIL exception
+	});
+
+	// search and filter array based on user input
+
+	// set-up empty observable array for visible locations
+	self.filteredLocations = ko.observableArray();
+
+	// populate the visible locations array with objects from locationsList
+	self.locationsList.forEach(function(locItem) {
+		self.filteredLocations.push(locItem);
+	});
+
+	// set user filter as ko observable
+	self.userFilter = ko.observable('');
+
+	// filter function: updates observableArray and
+	// sets visibility of location markers
+	self.runFilter = function() {
+		var queryFilter = self.userFilter().toLowerCase();
+
+		// First, clear the array
+		self.filteredLocations.removeAll();
+
+		// Secondly, run the filter and only add to the array if it matches
+		self.locationsList.forEach(function(locItem) {
+
+			// set marker to false - hide
+			locItem.marker.setVisible(false);
+
+			if(locItem.title.toLowerCase().indexOf(queryFilter) !== -1) {
+				self.filteredLocations.push(locItem);
+			}
+		});
+
+		// set true to each item in the array - visible
+
+		self.filteredLocations().forEach(function(locItem) {
+			locItem.marker.setVisible(true);
+		});
+	};
 }
 
-ko.applyBindings(new ViewModel());
-
-// This is the branch with the future changes
+var initApp = function() {
+	initMap();
+	ko.applyBindings(new ViewModel());
+};
