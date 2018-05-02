@@ -48,15 +48,8 @@ var LocModel = function(data) {
 var ViewModel = function() {
 	var self = this;
 
-	// this.filter = ko.computed(function () {
-	//     if (this.query()) {
-	//         var search = this.query().toLowerCase();
-	//         return ko.utils.arrayFilter(this.locationsList(), function (loc) {
-	//             return loc.title().toLowerCase().indexOf(search) >= 0;
-	//         });
-	//     } else {
-	//         return this.locationsList
-	//     }}, this);  
+	var flickrClientID = '875ad6a0743ed07d536b10e4f653791a';
+	var flickrClientSecret = 'ca92b4377d46bcee';
 
 	// This is the locations array
 	this.locationsList = [];
@@ -67,6 +60,11 @@ var ViewModel = function() {
 		self.locationsList.push( new LocModel(locItem));
 	});
 
+	// Creating an info window variable for future reference
+	var infowindow = new google.maps.InfoWindow({
+		maxWidth: 250
+	});
+
 	// creating the markers for each object in the locationsList array
 	self.locationsList.forEach(function(locItem) {
 		locItem.marker = new google.maps.Marker({
@@ -74,12 +72,37 @@ var ViewModel = function() {
 			animation: google.maps.Animation.DROP,
 			position: locItem.location,
 		});
-
-		// Add 3rd party API's
-
-		// Add event listeners
+				// Add event listeners
 
 		// FAIL exception
+
+		locItem.marker.addListener('click', function() {
+			$.ajax({
+				type: "GET",
+				url: 'https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=' + flickrClientID + '&text=' + locItem.title + '&sort=interestingness-desc&per_page=10&format=json',
+				dataType: "jsonp",
+				jsonp: 'jsoncallback',
+				success: function(data) {
+					console.log(data);
+					$.each( data.photos.photo, function( i, ph ) {
+						// Shorten and confirm valid json responses for appending photos
+						var farmId = ph.farm;
+						var serverId = ph.server;
+						var id = ph.id;
+						var secret = ph.secret;
+						console.log('success!');
+						var contentString = '<img src=https://farm' + farmId + '.staticflickr.com/' + serverId + '/' + id + '_' + secret + '.jpg/>';
+
+						infowindow.open(map, locItem.marker);
+
+						infowindow.setContent(contentString);
+					});
+				},
+				error: function(){
+					console.log("the request failed");
+				}
+			});
+		});
 	});
 
 	// search and filter array based on user input
