@@ -84,18 +84,41 @@ var ViewModel = function() {
 				jsonp: 'jsoncallback',
 				success: function(data) {
 					console.log(data);
-					$.each( data.photos.photo, function( i, ph ) {
-						// Shorten and confirm valid json responses for appending photos
-						var farmId = ph.farm;
-						var serverId = ph.server;
-						var id = ph.id;
-						var secret = ph.secret;
-						console.log('success!');
-						var contentString = '<img src=https://farm' + farmId + '.staticflickr.com/' + serverId + '/' + id + '_' + secret + '.jpg/>';
-
-						infowindow.open(map, locItem.marker);
-
-						infowindow.setContent(contentString);
+					// Shorten and confirm valid json responses for appending photos
+					// var farmId = ph.farm;
+					// var serverId = ph.server;
+					// var id = ph.id;
+					// var secret = ph.secret;
+					// Consolidating the data into a variable
+					var result = data;
+					// Consolidating the start of the flickr api code into a variable
+					var number = result.photos.photo;
+					// First content for primary image, and bootstrap carousel data
+					var contentFirst = '<div id="flickrCarousel" class="carousel slide" data-ride="carousel">' + 
+						'<div id="append" class="carousel-inner">' + 
+							'<div class="carousel-item active">' +
+								'<img class="d-block w-100" alt="Primary Slide" src="https://farm' + number[0]['farm'] + '.staticflickr.com/' + number[0]['server'] + '/' + number[0]['id'] + '_' + number[0]['secret'] + '.jpg"/>' +
+							'</div>' +
+						'</div>' +
+						'<a class="carousel-control-prev" href="#flickrCarousel" role="button" data-slide="prev">' +
+    						'<span class="carousel-control-prev-icon" aria-hidden="true"></span>' +
+						    '<span class="sr-only">Previous</span>' +
+						 '</a>' +
+						 '<a class="carousel-control-next" href="#flickrCarousel" role="button" data-slide="next">' +
+						    '<span class="carousel-control-next-icon" aria-hidden="true"></span>' +
+						    '<span class="sr-only">Next</span>' +
+						  '</a>' +
+					'</div>';
+					// <div class="carousel-item active"><img src="https://farm' + number[0]['farm'] + '.staticflickr.com/' + number[0]['server'] + '/' + number[0]['id'] + '_' + number[0]['secret'] + '.jpg"/></div>';
+					console.log(contentFirst);
+					infowindow.setContent(contentFirst);
+					infowindow.open(map, locItem.marker);
+					google.maps.event.addListenerOnce(infowindow, 'domready', function() {
+						for (var p = 1; p < result.photos.photo.length; p++) {
+							var contentString = '<div class="carousel-item"><img class="d-block w-100" alt="Secondary Slide" src="https://farm' + number[p]['farm'] + '.staticflickr.com/' + number[p]['server'] + '/' + number[p]['id'] + '_' + number[p]['secret'] + '.jpg"/></div';
+							$( "#append" ).append(contentString);
+							console.log(contentString);
+						}
 					});
 				},
 				error: function(){
