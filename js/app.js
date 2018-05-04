@@ -1,4 +1,7 @@
 // These are the places most popular tourist destinations that will be shown to the user.
+
+'use strict'
+
 var locations = [
 	{
 		title: 'Playa Blanca, Baru, Cartagena',
@@ -117,10 +120,10 @@ var ViewModel = function() {
 	});
 
 	// This will be our standard listing marker icon
-	var highlightedIcon = makeMarkerIcon('FFE19C');
+	var defaultIcon = makeMarkerIcon('FF784F');
 
 	// This will be the "highlighted location" marker color for when user mouses over the marker
-	var defaultIcon = makeMarkerIcon('FF784F');
+	var highlightedIcon = makeMarkerIcon('FFE19C');
 
 	// creating the markers for each object in the locationsList array
 	self.locationsList.forEach(function(locItem) {
@@ -156,9 +159,9 @@ var ViewModel = function() {
 				// Consolidating the start of the flickr api code into a variable
 				var number = result.photos.photo;
 				for (var p = 1; p < result.photos.photo.length; p++) {
-						var contentString = '<div class="carousel-item" id="infowindow">' +
+						var contentString = '<div class="carousel-item infowindow">' +
 							'<h6>' + locItem.title + '</h6>' +
-							'<img class="d-block w-100" alt="Secondary Slide" src="https://farm' + number[p]['farm'] + '.staticflickr.com/' + number[p]['server'] + '/' + number[p]['id'] + '_' + number[p]['secret'] + '.jpg"/>' +
+							'<img class="d-block w-100" alt="Secondary Slide" src="https://farm' + number[p].farm + '.staticflickr.com/' + number[p].server + '/' + number[p].id + '_' + number[p].secret + '.jpg"/>' +
 							'<p>Flickr <i class="fab fa-flickr"></i></p>' +
 						'</div>';
 						this.contentArray.push(contentString);
@@ -167,9 +170,9 @@ var ViewModel = function() {
 				// First content for primary image, and bootstrap carousel data
 				locItem.contentFirst = '<div id="flickrCarousel" class="carousel slide" data-ride="carousel">' + 
 					'<div class="carousel-inner">' + 
-						'<div class="carousel-item active" id="infowindow">' +
+						'<div class="carousel-item active infowindow">' +
 							'<h6>' + locItem.title + '</h6>' +
-							'<img class="d-block w-100" alt="Primary Slide" src="https://farm' + number[0]['farm'] + '.staticflickr.com/' + number[0]['server'] + '/' + number[0]['id'] + '_' + number[0]['secret'] + '.jpg"/>' +
+							'<img class="d-block w-100" alt="Primary Slide" src="https://farm' + number[0].farm + '.staticflickr.com/' + number[0].server + '/' + number[0].id + '_' + number[0].secret + '.jpg"/>' +
 								'<p>Flickr <i class="fab fa-flickr"></i></p>' +
 						'</div>' +
 						this.contentArray.join("") +
@@ -196,16 +199,29 @@ var ViewModel = function() {
 		
 		// listens for clicks on the marker and then executes... 			
 		locItem.marker.addListener('click', function() {
+            highlightMarker(this);
 			infowindow.open(map, locItem.marker);
 		    infowindow.setContent(locItem.contentFirst);
 		});
 	});
-
+	// This enables the list view to be licked and the corresponding marker activated
 	this.displayInfo = function(locItem) {
+        var marker = locItem.marker;
+        highlightMarker(marker);
         infowindow.open(map, locItem.marker);
 	    infowindow.setContent(locItem.contentFirst);
-	    locItem.marker.setIcon(highlightedIcon);
 	};
+	// This triggers an animation when the list or marker is clicked
+	function highlightMarker(marker) {
+        if (marker.getAnimation() !== null) {
+            marker.setAnimation(null);
+        } else {
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function() {
+                marker.setAnimation(null);
+            }, 2800);  // 4 bounces then stops
+        }
+    }
 
 	// search and filter array based on user input
 	// set-up empty observable array for visible locations
@@ -258,7 +274,7 @@ var ViewModel = function() {
 		new google.maps.Size(21,34));
 	return markerImage;
 	}
-}
+};
 
 var initApp = function() {
 	initMap();

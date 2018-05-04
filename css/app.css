@@ -1,26 +1,5 @@
  /*Neighborhood Map CSS*/
 
-@media screen and (max-width: 800px) {
-	#side-panel {
-		display: none;
-	}
-	#map {
-		width: 100%;
-	}
-}
-
-@media screen and (min-width: 801px) {
-	#mobile {
-		display: none;
-	}
-	#map {
-		width: 80%;
-	}
-	#side-panel {
-		width: 20%;
-	}
-}
-
 li,
 h6 {
 	font-family: 'Roboto', sans-serif;
@@ -35,6 +14,7 @@ p {
 button {
 	min-width: 50px;
 	min-height: 50px;
+	margin: 1em 0 0 1em;
 }
 
 
@@ -54,14 +34,14 @@ body {
 	height: 100%;
 }
 
-#map {
+.map-canvas {
 	bottom: 0px;
     height: 100%;
     position: absolute;
     right: 0px;
 }
 
-#side-panel {
+.side-panel {
     background: #fff;
 	height: 100%;
 	line-height: 35px;
@@ -69,7 +49,8 @@ body {
 	text-align: left;
 }
 
-#filter {
+.filter,
+.filterMobile {
 	width: 100%;
 }
 
@@ -79,6 +60,30 @@ ul {
 	padding: 0 0 0 10px;
 }
 
-#infowindow {
+.infowindow {
 	text-align: center;
+}
+
+@media screen and (max-width: 800px) {
+	.dropdown {
+		z-index: 1;
+	}
+	.side-panel {
+		display: none;
+	}
+	.map-canvas {
+		width: 100%;
+	}
+}
+
+@media screen and (min-width: 801px) {
+	.dropdown {
+		display: none;
+	}
+	.map-canvas {
+		width: 80%;
+	}
+	.side-panel {
+		width: 20%;
+	}
 }
