@@ -1,4 +1,42 @@
-/* Neighborhood Map CSS*/
+ /*Neighborhood Map CSS*/
+
+@media screen and (max-width: 800px) {
+	#side-panel {
+		display: none;
+	}
+	#map {
+		width: 100%;
+	}
+}
+
+@media screen and (min-width: 801px) {
+	#mobile {
+		display: none;
+	}
+	#map {
+		width: 80%;
+	}
+	#side-panel {
+		width: 20%;
+	}
+}
+
+li,
+h6 {
+	font-family: 'Roboto', sans-serif;
+
+}
+
+input,
+p {
+	font-family: 'Raleway', sans-serif;
+}
+
+button {
+	min-width: 50px;
+	min-height: 50px;
+}
+
 
 html,
 body {
@@ -12,28 +50,35 @@ body {
     position: relative;
 }
 
+.row {
+	height: 100%;
+}
+
 #map {
 	bottom: 0px;
     height: 100%;
-    width: 100%;
-    left: 362px;
     position: absolute;
     right: 0px;
 }
 
 #side-panel {
     background: #fff;
-	border: 1px solid #999;
-	border-radius: 3px;
 	height: 100%;
 	line-height: 35px;
-	padding: 0 10px 0 10px;
+	padding: 0;
 	text-align: left;
-	width: 340px;
 }
 
-#list {
+#filter {
+	width: 100%;
+}
+
+ul {
 	list-style-type: none;
 	text-align: left;
-	padding: 0 0 0 2%;
+	padding: 0 0 0 10px;
+}
+
+#infowindow {
+	text-align: center;
 }

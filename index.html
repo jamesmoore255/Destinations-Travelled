@@ -6,25 +6,36 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/app.css">
+    <link href="https://fonts.googleapis.com/css?family=Raleway|Roboto" rel="stylesheet">
 </head>
 <body>
 	<div class="wrapper">
-
-		<div id="side-panel">
+		<div class="dropdown" id="mobile">
+			<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-bars"></i></button>
+			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				<input id="filter" type="search" placeholder="Destination..." data-bind="textInput: userFilter, event: {keyup: runFilter}" autocomplete="off">
+				<ul id="list" data-bind="foreach: filteredLocations">
+					<li data-bind="click: $parent.displayInfo">
+						<span data-bind="text: title"></span>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div id="side-panel" class="col-3">
 			<input id="filter" type="search" placeholder="Destination..." data-bind="textInput: userFilter, event: {keyup: runFilter}" autocomplete="off">
 			<ul id="list" data-bind="foreach: filteredLocations">
-				<li data-bind="text: title"></li>
+				<li data-bind="click: $parent.displayInfo">
+					<span data-bind="text: title"></span>
+				</li>
 			</ul>
-			<div id="flickr"></div>
 		</div>
-
 		<div id="map"></div>
 	</div>
 
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/knockout/dist/knockout.js"></script>
 	<script src="bower_components/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
+	<script defer src="https://use.fontawesome.com/releases/v5.0.2/js/all.js"></script>
 	<script src="js/app.js"></script>
 	<script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNy8RnvX7kFOIURwJmmdH453U4qJEmfSk&libraries=geometry,drawing&v=3&callback=initApp">
